@@ -32,10 +32,10 @@ func TestPriorityQueue(t *testing.T) {
 	heap.Push(&pq, item)
 
 	exps := []Item[string]{
-		{Value: "orange", Priority: 5},
-		{Value: "pear", Priority: 4},
-		{Value: "banana", Priority: 3},
 		{Value: "apple", Priority: 2},
+		{Value: "banana", Priority: 3},
+		{Value: "pear", Priority: 4},
+		{Value: "orange", Priority: 5},
 	}
 
 	for _, exp := range exps {

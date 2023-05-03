@@ -12,18 +12,27 @@ const (
 	INF = 1 << 60
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
+func main() {
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	n, m := NextInt(sc), NextInt(sc)
+	graph := make(Graph, n)
+	for i := 0; i < m; i++ {
+		a, b, c := NextInt(sc)-1, NextInt(sc)-1, NextInt(sc)
+		graph[a] = append(graph[a], Edge{To: b, Weight: c})
+		graph[b] = append(graph[b], Edge{To: a, Weight: c})
+	}
 
-type Node struct {
-	value    int
-	distance int
+	from1 := Dijkstra(graph, 0)
+	fromN := Dijkstra(graph, n-1)
+	for k := 0; k < n; k++ {
+		fmt.Println(from1[k] + fromN[k])
+	}
 }
 
 type Edge struct {
-	to     int
-	weight int
+	To     int
+	Weight int
 }
 
 type Graph [][]Edge
@@ -37,18 +46,21 @@ func Dijkstra(graph Graph, start int) []int {
 	dist[start] = 0
 
 	// priority queue
-	pq := make(PriorityQueue, 1)
-	pq[0] = &Node{value: start, distance: dist[start]}
-	heap.Init(&pq)
+	pq := new(PriorityQueue)
+	heap.Push(pq, Item{Value: start, Priority: dist[start]})
 
 	for pq.Len() > 0 {
-		now := heap.Pop(&pq).(*Node)
-		if dist[now.value] < now.distance {
+		item := heap.Pop(pq).(Item)
+		now := item.Value
+		nowCost := item.Priority
+		if dist[now] < nowCost {
 			continue
 		}
-		for _, e := range graph[now.value] {
-			if chmin(&dist[e.to], now.distance+e.weight) {
-				heap.Push(&pq, &Node{value: e.to, distance: now.distance + e.weight})
+		for _, e := range graph[now] {
+			next := e.To
+			nextCost := nowCost + e.Weight
+			if Chmin(&dist[e.To], nextCost) {
+				heap.Push(pq, Item{Value: next, Priority: nextCost})
 			}
 		}
 	}
@@ -56,7 +68,7 @@ func Dijkstra(graph Graph, start int) []int {
 	return dist
 }
 
-func chmin(a *int, b int) bool {
+func Chmin(a *int, b int) bool {
 	if *a > b {
 		*a = b
 		return true
@@ -64,31 +76,19 @@ func chmin(a *int, b int) bool {
 	return false
 }
 
-func main() {
-	sc.Split(bufio.ScanWords)
-	n, m := NextInt(), NextInt()
-	graph := make(Graph, n)
-	for i := 0; i < m; i++ {
-		a, b, c := NextInt()-1, NextInt()-1, NextInt()
-		graph[a] = append(graph[a], Edge{to: b, weight: c})
-		graph[b] = append(graph[b], Edge{to: a, weight: c})
-	}
-
-	from1 := Dijkstra(graph, 0)
-	fromN := Dijkstra(graph, n-1)
-	for k := 0; k < n; k++ {
-		fmt.Println(from1[k] + fromN[k])
-	}
+type Item struct {
+	Value    int
+	Priority int
 }
 
-type PriorityQueue []*Node
+type PriorityQueue []Item
 
 func (pq PriorityQueue) Len() int {
 	return len(pq)
 }
 
 func (pq PriorityQueue) Less(i, j int) bool {
-	return pq[i].distance > pq[j].distance
+	return pq[i].Priority < pq[j].Priority
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
@@ -96,20 +96,17 @@ func (pq PriorityQueue) Swap(i, j int) {
 }
 
 func (pq *PriorityQueue) Push(x interface{}) {
-	node := x.(*Node)
-	*pq = append(*pq, node)
+	*pq = append(*pq, x.(Item))
 }
 
 func (pq *PriorityQueue) Pop() interface{} {
-	old := *pq
 	n := len(*pq)
-	node := old[n-1]
-	old[n-1] = nil
-	*pq = old[:n-1]
-	return node
+	res := (*pq)[n-1]
+	*pq = (*pq)[:n-1]
+	return res
 }
 
-func NextInt() int {
+func NextInt(sc *bufio.Scanner) int {
 	sc.Scan()
 	n, err := strconv.Atoi(sc.Text())
 	if err != nil {
