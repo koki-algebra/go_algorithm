@@ -19,20 +19,23 @@ func main() {
 	for i := range a {
 		a[i] = NextInt()
 	}
+
+	// sort slice a in decreasing order
 	sort.Slice(a, func(i, j int) bool { return a[i] > a[j] })
 
 	max := -1
 	for j := 0; j < m; j++ {
 		b := NextInt()
-		index := sort.Search(n, func(i int) bool {
-			return a[i] <= b+d
-		})
 
+		// binary search for the smallest i such that a[i]- b <= d
+		index := sort.Search(n, func(i int) bool { return a[i] <= b+d })
+
+		// does not exist
 		if index == n {
 			continue
 		}
 
-		if a[index] >= b-d {
+		if b-a[index] <= d {
 			chmax(&max, a[index]+b)
 		}
 	}
