@@ -1,4 +1,4 @@
-package lib
+package libs
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestDijkstra(t *testing.T) {
-	input, err := os.Open("../testdata/dijkstra_input.txt")
+	input, err := os.Open("../../testdata/dijkstra_input.txt")
 	if err != nil {
 		t.Fatal("failed to open input file")
 	}
@@ -27,7 +27,7 @@ func TestDijkstra(t *testing.T) {
 	from1 := Dijkstra(graph, 0)
 	fromN := Dijkstra(graph, n-1)
 
-	output, err := os.Open("../testdata/dijkstra_ouput.txt")
+	output, err := os.Open("../../testdata/dijkstra_ouput.txt")
 	if err != nil {
 		t.Fatal("failed to open output file")
 	}

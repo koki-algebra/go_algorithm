@@ -1,4 +1,4 @@
-package lib
+package libs
 
 import (
 	"fmt"
@@ -15,6 +15,7 @@ func TestGcd(t *testing.T) {
 		{x: 1, y: 0, exp: 1},
 		{x: 15, y: 5, exp: 5},
 		{x: 11, y: 55, exp: 11},
+		{x: 1071, y: 1029, exp: 21},
 		{x: 1000000000000000000, y: 999999999999999999, exp: 1},
 	}
 

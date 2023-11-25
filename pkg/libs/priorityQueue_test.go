@@ -1,8 +1,10 @@
-package lib
+package libs
 
 import (
 	"container/heap"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPriorityQueue(t *testing.T) {
@@ -40,11 +42,7 @@ func TestPriorityQueue(t *testing.T) {
 
 	for _, exp := range exps {
 		got := heap.Pop(&pq).(Item[string])
-		if got.Value != exp.Value {
-			t.Errorf("expected value is %s, but got %s", exp.Value, got.Value)
-		}
-		if got.Priority != exp.Priority {
-			t.Errorf("expected priority is %d, but got %d", exp.Priority, got.Priority)
-		}
+		assert.Equal(t, exp.Value, got.Value)
+		assert.Equal(t, exp.Priority, got.Priority)
 	}
 }
