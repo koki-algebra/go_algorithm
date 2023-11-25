@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/koki-algebra/go_algorithm/lib"
+	"github.com/koki-algebra/go_algorithm/pkg/libs"
 )
 
 var (
@@ -23,7 +23,7 @@ func main() {
 	}
 
 	q := NextInt()
-	uf := lib.NewUnionFind(h * w)
+	uf := libs.NewUnionFind(h * w)
 	for i := 0; i < q; i++ {
 		t := NextInt()
 		if t == 1 {

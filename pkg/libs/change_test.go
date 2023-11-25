@@ -1,6 +1,10 @@
-package lib
+package libs
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestChmin(t *testing.T) {
 	tests := map[string]struct {
@@ -15,12 +19,9 @@ func TestChmin(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			a := test.a
-			if got := Chmin(&a, test.b); got != test.expBool {
-				t.Errorf("expected value is %t, but got %t", test.expBool, got)
-			}
-			if a != test.expA {
-				t.Errorf("expected value of a is %d, but got %d", test.expA, a)
-			}
+			got := Chmin(&a, test.b)
+			assert.Equal(t, test.expBool, got)
+			assert.Equal(t, test.expA, a)
 		})
 	}
 }
@@ -38,12 +39,9 @@ func TestChmax(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			a := test.a
-			if got := Chmax(&a, test.b); got != test.expBool {
-				t.Errorf("expected value is %t, but got %t", test.expBool, got)
-			}
-			if a != test.expA {
-				t.Errorf("expected value of a is %d, but got %d", test.expA, a)
-			}
+			got := Chmax(&a, test.b)
+			assert.Equal(t, test.expBool, got)
+			assert.Equal(t, test.expA, a)
 		})
 	}
 }

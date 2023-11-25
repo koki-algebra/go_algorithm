@@ -1,4 +1,4 @@
-package lib
+package libs
 
 type Item[T any] struct {
 	Value    T

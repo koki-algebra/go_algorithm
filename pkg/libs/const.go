@@ -1,4 +1,4 @@
-package lib
+package libs
 
 const (
 	INF = 1 << 60

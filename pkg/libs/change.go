@@ -1,4 +1,4 @@
-package lib
+package libs
 
 func Chmin(a *int, b int) bool {
 	if *a > b {

@@ -1,4 +1,4 @@
-package lib
+package libs
 
 func Gcd(x, y int) int {
 	if y == 0 {

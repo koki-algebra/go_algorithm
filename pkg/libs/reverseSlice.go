@@ -1,4 +1,4 @@
-package lib
+package libs
 
 func ReverseSlice[T any](slice []T) []T {
 	new := make([]T, len(slice))
