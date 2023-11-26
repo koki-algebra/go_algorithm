@@ -1,0 +1,13 @@
+# D - Knapsack 1
+dp[i+1][w]: i番目の品物の中から, 重さの総和が w を超えないように選んだときの, 価値の総和の最大値
+
+dp[0][w] = 0 (w = 0,1,...,W)
+dp[i+1][w] = max(dp[i][w - weight[i]] + value[i], dp[i][w]) (weight[i] <= w)
+dp[i+1][w] = dp[i][w] (weight[i] > w)
+
+# E - Knapsack 2
+dp[i+1][v]: i番目の品物の中から, 価値が v となるように選んだときの, 重さの総和の最小値
+
+dp[0][0] = 0
+dp[i+1][v] = min(dp[i][v - value[i]] + weight[i], dp[i][v]) (v >= value[i])
+dp[i+1][v] = dp[i][v] (v < value[i])
