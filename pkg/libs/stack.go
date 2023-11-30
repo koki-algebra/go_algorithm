@@ -13,15 +13,14 @@ func NewStack() *Stack {
 }
 
 func (s *Stack) Push(v any) {
-	s.l.PushFront(v)
+	s.l.PushBack(v)
 }
 
 func (s *Stack) Pop() any {
 	if s.l.Len() == 0 {
 		panic("stack is empty")
 	}
-	e := s.l.Front()
-	return s.l.Remove(e)
+	return s.l.Remove(s.l.Back())
 }
 
 func (s *Stack) IsEmpty() bool {

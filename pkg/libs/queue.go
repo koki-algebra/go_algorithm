@@ -13,12 +13,11 @@ func NewQueue() *Queue {
 }
 
 func (q *Queue) Enqueue(v any) {
-	q.l.PushFront(v)
+	q.l.PushBack(v)
 }
 
 func (q *Queue) Dequeue() any {
-	e := q.l.Back()
-	return q.l.Remove(e)
+	return q.l.Remove(q.l.Front())
 }
 
 func (q *Queue) IsEmpty() bool {
