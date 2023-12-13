@@ -8,11 +8,13 @@ import (
 	"strconv"
 )
 
+type Graph [][]int
+
 var (
-	graph [][]int
-	seen  []bool
-	deq   = list.New()
-	stop  = false
+	graph  Graph
+	seen   []bool
+	isFind bool
+	deque  = list.New()
 )
 
 func main() {
@@ -22,7 +24,7 @@ func main() {
 	defer w.Flush()
 
 	n, x, y := NextInt(sc), NextInt(sc)-1, NextInt(sc)-1
-	graph = make([][]int, n)
+	graph = make(Graph, n)
 	for i := 0; i < n-1; i++ {
 		u, v := NextInt(sc)-1, NextInt(sc)-1
 		graph[u] = append(graph[u], v)
@@ -33,19 +35,19 @@ func main() {
 
 	dfs(x, y)
 
-	for e := deq.Front(); e != nil; e = e.Next() {
+	for e := deque.Front(); e != nil; e = e.Next() {
 		v := e.Value.(int)
 		fmt.Fprintf(w, "%d ", v+1)
 	}
 	fmt.Fprintln(w)
 }
 
-func dfs(v, to int) {
-	if !stop {
-		deq.PushBack(v)
+func dfs(v int, to int) {
+	if !isFind {
+		deque.PushBack(v)
 	}
 	if v == to {
-		stop = true
+		isFind = true
 	}
 	seen[v] = true
 
@@ -55,8 +57,8 @@ func dfs(v, to int) {
 		}
 	}
 
-	if !stop {
-		deq.Remove(deq.Back())
+	if !isFind {
+		deque.Remove(deque.Back())
 	}
 }
 
