@@ -5,49 +5,53 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
 	writer := bufio.NewWriter(os.Stdout)
 	defer writer.Flush()
 
-	s := strings.Split(NextLine(sc), " ")
-	h, _ := strconv.Atoi(s[0])
-	w, _ := strconv.Atoi(s[1])
+	h, w := NextInt(sc), NextInt(sc)
 	a := make([][]int, h)
 	rowSum := make([]int, h)
 	colSum := make([]int, w)
 
-	for i := 0; i < h; i++ {
+	for i := range a {
 		a[i] = make([]int, w)
-		s := strings.Split(NextLine(sc), " ")
-		for j := 0; j < w; j++ {
-			a[i][j], _ = strconv.Atoi(s[j])
+		for j := range a[i] {
+			a[i][j] = NextInt(sc)
 			rowSum[i] += a[i][j]
+		}
+	}
+
+	for j := 0; j < w; j++ {
+		for i := 0; i < h; i++ {
 			colSum[j] += a[i][j]
 		}
 	}
 
-	for i := 0; i < h; i++ {
-		for j := 0; j < w; j++ {
+	for i := range a {
+		for j := range a[i] {
 			fmt.Fprintf(writer, "%d ", rowSum[i]+colSum[j]-a[i][j])
 		}
-		fmt.Fprint(writer, "\n")
+		fmt.Fprintln(writer)
 	}
 }
 
 func NextInt(sc *bufio.Scanner) int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
-}
 
-func NextLine(sc *bufio.Scanner) string {
-	sc.Scan()
-	return sc.Text()
+	return -1
 }
