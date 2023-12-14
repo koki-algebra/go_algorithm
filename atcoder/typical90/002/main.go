@@ -4,58 +4,43 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 )
-
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
-const (
-	INF = 1 << 60
-)
-
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
-		panic(err)
-	}
-	return n
-}
 
 func main() {
-	sc.Split(bufio.ScanWords)
-	n := NextInt()
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
 
-	for bit := 0; bit < 1<<n; bit++ {
-		var s string
-		for i := n - 1; i >= 0; i-- {
+	var n int
+	fmt.Scan(&n)
+
+	for bit := (1 << n) - 1; bit > 0; bit-- {
+		s := ""
+		for i := 0; i < n; i++ {
 			if (bit >> i & 1) == 1 {
-				s += ")"
+				s = "(" + s
 			} else {
-				s += "("
+				s = ")" + s
 			}
 		}
+
 		if isValid(s) {
-			fmt.Println(s)
+			fmt.Fprintln(w, s)
 		}
 	}
 }
 
 func isValid(s string) bool {
-	score := 0
+	siz := 0
 	for i := range s {
-		switch string(s[i]) {
-		case "(":
-			score++
-		case ")":
-			score--
+		if s[i] == '(' {
+			siz++
+		} else if s[i] == ')' {
+			siz--
 		}
-		if score < 0 {
+		if siz < 0 {
 			return false
 		}
 	}
 
-	return score == 0
+	return siz == 0
 }
