@@ -8,56 +8,66 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n := NextInt()
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
+	n := NextInt(sc)
 	a := make([]int, n)
 	for i := range a {
-		a[i] = NextInt()
+		a[i] = NextInt(sc)
 	}
-
+	// sort slice: O(NlogN)
 	sort.Ints(a)
 
-	q := NextInt()
-	for j := 0; j < q; j++ {
-		b := NextInt()
+	q := NextInt(sc)
+	for i := 0; i < q; i++ {
+		b := NextInt(sc)
 
-		// binary search
-		index := sort.Search(n, func(i int) bool { return a[i] >= b })
+		// binary search: O(logN)
+		index := sort.SearchInts(a, b)
 
-		if index > 0 && index < n {
-			fmt.Println(min(abs(a[index]-b), abs(a[index-1]-b)))
-		} else if index == 0 {
-			fmt.Println(abs(a[index] - b))
-		} else {
-			fmt.Println(abs(a[index-1] - b))
+		ans := 1 << 60
+		if index >= 0 && index <= n-1 {
+			Chmin(&ans, abc(a[index]-b))
 		}
+		if index >= 1 {
+			Chmin(&ans, abc(a[index-1]-b))
+		}
+
+		fmt.Fprintln(w, ans)
 	}
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
 
-func abs(v int) int {
-	if v < 0 {
-		v = -v
+func abc(a int) int {
+	if a < 0 {
+		return -a
 	}
-	return v
+	return a
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
+func Chmin(a *int, b int) bool {
+	if *a > b {
+		*a = b
+		return true
 	}
-	return b
+	return false
 }
