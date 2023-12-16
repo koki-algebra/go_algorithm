@@ -10,37 +10,44 @@ import (
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
 
 	n := NextInt(sc)
-	p1, p2 := make([]int, n), make([]int, n)
+	sum1 := make([]int, n+1)
+	sum2 := make([]int, n+1)
 	for i := 0; i < n; i++ {
 		c, p := NextInt(sc), NextInt(sc)
 		if c == 1 {
-			p1[i] = p
+			sum1[i+1] = sum1[i] + p
+			sum2[i+1] = sum2[i]
 		} else {
-			p2[i] = p
+			sum1[i+1] = sum1[i]
+			sum2[i+1] = sum2[i] + p
 		}
-	}
-
-	// 累積和のスライス
-	s1, s2 := make([]int, n+1), make([]int, n+1)
-	for i := 0; i < n; i++ {
-		s1[i+1] = s1[i] + p1[i]
-		s2[i+1] = s2[i] + p2[i]
 	}
 
 	q := NextInt(sc)
 	for i := 0; i < q; i++ {
 		l, r := NextInt(sc), NextInt(sc)
-		fmt.Printf("%d %d\n", s1[r]-s1[l-1], s2[r]-s2[l-1])
+		ans1 := sum1[r] - sum1[l-1]
+		ans2 := sum2[r] - sum2[l-1]
+		fmt.Fprintln(w, ans1, ans2)
 	}
 }
 
 func NextInt(sc *bufio.Scanner) int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
