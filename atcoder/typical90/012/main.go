@@ -76,7 +76,7 @@ func NextInt(sc *bufio.Scanner) int {
 func Index(w, r, c int) int {
 	r--
 	c--
-	return (r + c) + (w-1)*r
+	return r + c + (w-1)*r
 }
 
 type UnionFind struct {
