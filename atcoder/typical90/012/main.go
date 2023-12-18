@@ -5,64 +5,120 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-
-	"github.com/koki-algebra/go_algorithm/pkg/libs"
-)
-
-var (
-	sc   = bufio.NewScanner(os.Stdin)
-	h, w int
 )
 
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	h, w = NextInt(), NextInt()
-	m := make([][]bool, h)
-	for i := range m {
-		m[i] = make([]bool, w)
-	}
+	writer := bufio.NewWriter(os.Stdout)
+	defer writer.Flush()
 
-	q := NextInt()
-	uf := libs.NewUnionFind(h * w)
+	h, w, q := NextInt(sc), NextInt(sc), NextInt(sc)
+
+	uf := NewUnionFind(h * w)
+
+	isRed := make([]bool, h*w)
+
 	for i := 0; i < q; i++ {
-		t := NextInt()
-		if t == 1 {
-			r, c := NextInt()-1, NextInt()-1
-			m[r][c] = true
-			// Union
-			if r-1 >= 0 && m[r-1][c] {
-				uf.Union(Index(r, c), Index(r-1, c))
+		if t := NextInt(sc); t == 1 {
+			var (
+				r, c  = NextInt(sc), NextInt(sc)
+				curr  = Index(w, r, c)
+				up    = Index(w, r-1, c)
+				down  = Index(w, r+1, c)
+				left  = Index(w, r, c-1)
+				right = Index(w, r, c+1)
+			)
+
+			isRed[curr] = true
+
+			if r > 1 && isRed[up] {
+				uf.Union(curr, up)
 			}
-			if r+1 <= h-1 && m[r+1][c] {
-				uf.Union(Index(r, c), Index(r+1, c))
+			if r < h && isRed[down] {
+				uf.Union(curr, down)
 			}
-			if c-1 >= 0 && m[r][c-1] {
-				uf.Union(Index(r, c), Index(r, c-1))
+			if c > 1 && isRed[left] {
+				uf.Union(curr, left)
 			}
-			if c+1 <= w-1 && m[r][c+1] {
-				uf.Union(Index(r, c), Index(r, c+1))
+			if c < w && isRed[right] {
+				uf.Union(curr, right)
 			}
 		} else {
-			ra, ca := NextInt()-1, NextInt()-1
-			rb, cb := NextInt()-1, NextInt()-1
-			if m[ra][ca] && m[rb][cb] && uf.Same(Index(ra, ca), Index(rb, cb)) {
-				fmt.Println("Yes")
+			ra, ca, rb, cb := NextInt(sc), NextInt(sc), NextInt(sc), NextInt(sc)
+			a, b := Index(w, ra, ca), Index(w, rb, cb)
+
+			if isRed[a] && isRed[b] && uf.Same(a, b) {
+				fmt.Fprintln(writer, "Yes")
 			} else {
-				fmt.Println("No")
+				fmt.Fprintln(writer, "No")
 			}
 		}
 	}
 }
 
-func Index(i, j int) int {
-	return (i + j) + (w-1)*i
-}
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
+}
+
+func Index(w, r, c int) int {
+	r--
+	c--
+	return (r + c) + (w-1)*r
+}
+
+type UnionFind struct {
+	parents []int
+	ranks   []int
+}
+
+func NewUnionFind(n int) *UnionFind {
+	uf := new(UnionFind)
+	uf.parents = make([]int, n)
+	uf.ranks = make([]int, n)
+	for i := 0; i < n; i++ {
+		uf.parents[i] = -1
+		uf.ranks[i] = 1
+	}
+
+	return uf
+}
+
+func (uf *UnionFind) Union(x, y int) {
+	x = uf.Find(x)
+	y = uf.Find(y)
+	if x == y {
+		return
+	}
+	if uf.ranks[x] > uf.ranks[y] {
+		x, y = y, x
+	}
+	if uf.ranks[x] == uf.ranks[y] {
+		uf.ranks[y]++
+	}
+	uf.parents[x] = y
+}
+
+func (uf *UnionFind) Find(x int) int {
+	if uf.parents[x] < 0 {
+		return x
+	}
+	uf.parents[x] = uf.Find(uf.parents[x])
+	return uf.parents[x]
+}
+
+func (uf *UnionFind) Same(x, y int) bool {
+	return uf.Find(x) == uf.Find(y)
 }
