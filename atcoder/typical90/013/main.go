@@ -15,6 +15,9 @@ const (
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
 	n, m := NextInt(sc), NextInt(sc)
 	graph := make(Graph, n)
 	for i := 0; i < m; i++ {
@@ -23,11 +26,36 @@ func main() {
 		graph[b] = append(graph[b], Edge{To: a, Weight: c})
 	}
 
-	from1 := Dijkstra(graph, 0)
-	fromN := Dijkstra(graph, n-1)
+	dist1 := Dijkstra(graph, 0)
+	dist2 := Dijkstra(graph, n-1)
+
 	for k := 0; k < n; k++ {
-		fmt.Println(from1[k] + fromN[k])
+		fmt.Fprintln(w, dist1[k]+dist2[k])
 	}
+}
+
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
+		panic(err)
+	}
+
+	return -1
+}
+
+func Chmin(a *int, b int) bool {
+	if *a > b {
+		*a = b
+		return true
+	}
+	return false
 }
 
 type Edge struct {
@@ -38,42 +66,36 @@ type Edge struct {
 type Graph [][]Edge
 
 func Dijkstra(graph Graph, start int) []int {
-	n := len(graph)
-	dist := make([]int, n)
+	dist := make([]int, len(graph))
 	for i := range dist {
 		dist[i] = INF
 	}
 	dist[start] = 0
 
-	// priority queue
+	// initialize priority queue
 	pq := new(PriorityQueue)
+	heap.Init(pq)
 	heap.Push(pq, Item{Value: start, Priority: dist[start]})
 
 	for pq.Len() > 0 {
 		item := heap.Pop(pq).(Item)
 		now := item.Value
 		nowCost := item.Priority
+
 		if dist[now] < nowCost {
 			continue
 		}
-		for _, e := range graph[now] {
-			next := e.To
-			nextCost := nowCost + e.Weight
-			if Chmin(&dist[e.To], nextCost) {
+
+		for _, edge := range graph[now] {
+			next := edge.To
+			nextCost := nowCost + edge.Weight
+			if Chmin(&dist[edge.To], nextCost) {
 				heap.Push(pq, Item{Value: next, Priority: nextCost})
 			}
 		}
 	}
 
 	return dist
-}
-
-func Chmin(a *int, b int) bool {
-	if *a > b {
-		*a = b
-		return true
-	}
-	return false
 }
 
 type Item struct {
@@ -95,22 +117,14 @@ func (pq PriorityQueue) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 }
 
-func (pq *PriorityQueue) Push(x interface{}) {
-	*pq = append(*pq, x.(Item))
+func (pq *PriorityQueue) Push(v any) {
+	*pq = append(*pq, v.(Item))
 }
 
-func (pq *PriorityQueue) Pop() interface{} {
-	n := len(*pq)
-	res := (*pq)[n-1]
+func (pq *PriorityQueue) Pop() any {
+	n := pq.Len()
+	v := (*pq)[n-1]
 	*pq = (*pq)[:n-1]
-	return res
-}
 
-func NextInt(sc *bufio.Scanner) int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
-		panic(err)
-	}
-	return n
+	return v
 }

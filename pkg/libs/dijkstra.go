@@ -10,29 +10,30 @@ type Edge struct {
 type Graph [][]Edge
 
 func Dijkstra(graph Graph, start int) []int {
-
-	n := len(graph)
-	dist := make([]int, n)
+	dist := make([]int, len(graph))
 	for i := range dist {
 		dist[i] = INF
 	}
 	dist[start] = 0
 
-	// priority queue
+	// initialize priority queue
 	pq := new(PriorityQueue[int])
+	heap.Init(pq)
 	heap.Push(pq, Item[int]{Value: start, Priority: dist[start]})
 
 	for pq.Len() > 0 {
 		item := heap.Pop(pq).(Item[int])
 		now := item.Value
 		nowCost := item.Priority
+
 		if dist[now] < nowCost {
 			continue
 		}
-		for _, e := range graph[now] {
-			next := e.To
-			nextCost := nowCost + e.Weight
-			if Chmin(&dist[e.To], nextCost) {
+
+		for _, edge := range graph[now] {
+			next := edge.To
+			nextCost := nowCost + edge.Weight
+			if Chmin(&dist[edge.To], nextCost) {
 				heap.Push(pq, Item[int]{Value: next, Priority: nextCost})
 			}
 		}
