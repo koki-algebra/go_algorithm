@@ -8,39 +8,49 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n := NextInt()
-	a, b := make([]int, n), make([]int, n)
+
+	n := NextInt(sc)
+	a := make([]int, n)
 	for i := range a {
-		a[i] = NextInt()
+		a[i] = NextInt(sc)
 	}
+	b := make([]int, n)
 	for i := range b {
-		b[i] = NextInt()
+		b[i] = NextInt(sc)
 	}
 
-	sort.Slice(a, func(i, j int) bool { return a[i] < a[j] })
-	sort.Slice(b, func(i, j int) bool { return b[i] < b[j] })
+	sort.Ints(a)
+	sort.Ints(b)
+
 	ans := 0
-	for i := 0; i < n; i++ {
-		val := a[i] - b[i]
-		if val < 0 {
-			val = -val
-		}
-		ans += val
+	for i := range a {
+		ans += distance(a[i], b[i])
 	}
 	fmt.Println(ans)
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
+}
+
+func distance(u, v int) int {
+	if u > v {
+		return u - v
+	}
+	return v - u
 }
