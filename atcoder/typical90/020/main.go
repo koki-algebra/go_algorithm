@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	var a, b, c int
-	fmt.Scanf("%d %d %d", &a, &b, &c)
+	fmt.Scan(&a, &b, &c)
 
 	t := 1
 	for i := 0; i < b; i++ {
