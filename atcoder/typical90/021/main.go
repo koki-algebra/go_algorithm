@@ -20,8 +20,8 @@ var (
 func main() {
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n, m := NextInt(sc), NextInt(sc)
 
+	n, m := NextInt(sc), NextInt(sc)
 	graph = make(Graph, n)
 	reverseGraph = make(Graph, n)
 	for i := 0; i < m; i++ {
@@ -32,25 +32,19 @@ func main() {
 
 	// DFS
 	seen = make([]bool, n)
-	for i := 0; i < n; i++ {
-		if seen[i] {
-			continue
+	for i := range seen {
+		if !seen[i] {
+			dfs(i)
 		}
-		DFS(i)
 	}
 
-	// 帰りがけ順を降順に
-	reverseSlice(history)
-
-	// 強連結成分分解
+	// DFS
 	seen = make([]bool, n)
-
-	for _, v := range history {
-		if seen[v] {
-			continue
+	for i := len(history) - 1; i >= 0; i-- {
+		if !seen[history[i]] {
+			components = append(components, []int{})
+			reverseDfs(history[i])
 		}
-		components = append(components, []int{})
-		ReverseDFS(v)
 	}
 
 	ans := 0
@@ -61,40 +55,41 @@ func main() {
 	fmt.Println(ans)
 }
 
-func DFS(v int) {
+func dfs(v int) {
 	seen[v] = true
 	for _, nv := range graph[v] {
-		if seen[nv] {
-			continue
+		if !seen[nv] {
+			dfs(nv)
 		}
-		DFS(nv)
 	}
+
 	history = append(history, v)
 }
 
-func ReverseDFS(v int) {
+func reverseDfs(v int) {
 	seen[v] = true
 	last := len(components) - 1
 	components[last] = append(components[last], v)
-	for _, nv := range reverseGraph[v] {
-		if seen[nv] {
-			continue
-		}
-		ReverseDFS(nv)
-	}
-}
 
-func reverseSlice(slice []int) {
-	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
-		slice[i], slice[j] = slice[j], slice[i]
+	for _, nv := range reverseGraph[v] {
+		if !seen[nv] {
+			reverseDfs(nv)
+		}
 	}
 }
 
 func NextInt(sc *bufio.Scanner) int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
