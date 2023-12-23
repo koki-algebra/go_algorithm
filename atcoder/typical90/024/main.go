@@ -7,56 +7,47 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n, k := NextInt(), NextInt()
-	a, b := make([]int, n), make([]int, n)
+
+	n, k := NextInt(sc), NextInt(sc)
+	a := make([]int, n)
 	for i := range a {
-		a[i] = NextInt()
+		a[i] = NextInt(sc)
 	}
-	for i := range b {
-		b[i] = NextInt()
-	}
-
-	diff := calcDiff(a, b)
-	if diff > k {
-		fmt.Println("No")
-		return
+	sum := 0
+	for i := 0; i < n; i++ {
+		b := NextInt(sc)
+		sum += abc(a[i] - b)
 	}
 
-	if (k-diff)%2 == 0 {
+	if diff := k - sum; diff >= 0 && diff%2 == 0 {
 		fmt.Println("Yes")
 	} else {
 		fmt.Println("No")
 	}
 }
 
-func calcDiff(a, b []int) (ans int) {
-	if len(a) != len(b) {
-		return -1
-	}
-	for i := range a {
-		ans += abs(a[i] - b[i])
-	}
-	return
-}
-
-func abs(v int) int {
+func abc(v int) int {
 	if v < 0 {
 		return -v
 	}
 	return v
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
