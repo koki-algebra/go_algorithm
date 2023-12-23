@@ -1,24 +1,18 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
 	var a, b, c int
-	fmt.Scanf("%d %d %d", &a, &b, &c)
+	fmt.Scan(&a, &b, &c)
 
-	gcd := Gcd(c, Gcd(a, b))
-	fmt.Println(getCutNum(a, gcd) + getCutNum(b, gcd) + getCutNum(c, gcd))
+	g := Gcd(Gcd(a, b), c)
+	fmt.Println(a/g + b/g + c/g - 3)
 }
 
-func getCutNum(x, y int) int {
-	return x/y - 1
-}
-
-func Gcd(x, y int) int {
-	if y == 0 {
-		return x
+func Gcd(a, b int) int {
+	if b == 0 {
+		return a
 	}
-	return Gcd(y, x%y)
+	return Gcd(b, a%b)
 }
