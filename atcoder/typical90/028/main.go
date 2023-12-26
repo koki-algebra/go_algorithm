@@ -7,55 +7,68 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 const (
 	MAX = 1000
 )
 
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n := NextInt()
-	var area [MAX + 1][MAX + 1]int
-	for i := 0; i < n; i++ {
-		lx, ly, rx, ry := NextInt(), NextInt(), NextInt(), NextInt()
-		area[lx][ly]++
-		area[lx][ry]--
-		area[rx][ry]++
-		area[rx][ly]--
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
+	n := NextInt(sc)
+	a := make([][]int, MAX+1)
+	for i := range a {
+		a[i] = make([]int, MAX+1)
 	}
 
-	// x方向の累積和
-	for x := 0; x <= MAX; x++ {
-		for y := 1; y <= MAX; y++ {
-			area[x][y] += area[x][y-1]
+	for i := 0; i < n; i++ {
+		lx, ly, rx, ry := NextInt(sc), NextInt(sc), NextInt(sc), NextInt(sc)
+		a[lx][ly]++
+		a[lx][ry]--
+		a[rx][ry]++
+		a[rx][ly]--
+	}
+
+	// x 軸方向の累積和
+	for y := 0; y <= MAX; y++ {
+		for x := 0; x < MAX; x++ {
+			a[x+1][y] += a[x][y]
 		}
 	}
-	// y方向の累積和
-	for x := 1; x <= MAX; x++ {
-		for y := 0; y <= MAX; y++ {
-			area[x][y] += area[x-1][y]
+
+	// y 軸方向の累積和
+	for x := 0; x <= MAX; x++ {
+		for y := 0; y < MAX; y++ {
+			a[x][y+1] += a[x][y]
 		}
 	}
 
 	ans := make([]int, n+1)
 	for x := 0; x <= MAX; x++ {
 		for y := 0; y <= MAX; y++ {
-			ans[area[x][y]]++
+			ans[a[x][y]]++
 		}
 	}
+
 	for i := 1; i <= n; i++ {
-		fmt.Println(ans[i])
+		fmt.Fprintln(w, ans[i])
 	}
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
