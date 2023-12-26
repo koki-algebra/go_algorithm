@@ -4,36 +4,36 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
-)
-
-var (
-	sc = bufio.NewScanner(os.Stdin)
 )
 
 func main() {
-	sc.Split(bufio.ScanWords)
-	n := NextInt()
-	m := make(map[string]int)
-	for i := 1; i <= n; i++ {
-		name := NextLine()
-		if _, ok := m[name]; !ok {
-			fmt.Println(i)
-			m[name] = i
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Buffer([]byte{}, 5e6)
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
+	var (
+		n     int
+		users = make(map[string]struct{})
+	)
+
+	fmt.Scan(&n)
+	for i := 0; i < n; i++ {
+		s := NextLine(sc)
+		if _, ok := users[s]; !ok {
+			users[s] = struct{}{}
+			fmt.Fprintln(w, i+1)
 		}
 	}
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextLine(sc *bufio.Scanner) string {
+	if sc.Scan() {
+		return sc.Text()
+	}
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
-}
 
-func NextLine() string {
-	sc.Scan()
-	return sc.Text()
+	return ""
 }
