@@ -8,90 +8,73 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
+const (
+	INF = 1 << 60
 )
 
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n := NextInt()
+
+	n := NextInt(sc)
 	a := make([][]int, n)
 	for i := range a {
 		a[i] = make([]int, n)
 		for j := range a[i] {
-			a[i][j] = NextInt()
+			a[i][j] = NextInt(sc)
 		}
 	}
-	m := NextInt()
-	taboosMap := make(map[int][]int)
-	for i := 0; i < m; i++ {
-		x, y := NextInt()-1, NextInt()-1
-		taboosMap[x] = append(taboosMap[x], y)
-		taboosMap[y] = append(taboosMap[y], x)
+
+	m := NextInt(sc)
+
+	// 選手 x と y が険悪ならば serious[x][y] == true
+	serious := make([][]bool, n)
+	for i := range serious {
+		serious[i] = make([]bool, n)
 	}
 
-	order := make([]int, n)
+	for i := 0; i < m; i++ {
+		x, y := NextInt(sc)-1, NextInt(sc)-1
+		serious[x][y] = true
+		serious[y][x] = true
+	}
+
+	// 第 i 区を選手 order[i] が担当する
+	order := make(sort.IntSlice, n)
 	for i := range order {
 		order[i] = i
 	}
 
-	min := 1 << 60
-	if isValid(taboosMap, order) {
-		sum := getSum(a, order)
-		if sum < min {
-			min = sum
-		}
-	}
-	for i := 1; NextPermutation(sort.IntSlice(order)); i++ {
-		if !isValid(taboosMap, order) {
-			continue
-		}
-		sum := getSum(a, order)
-		if sum < min {
-			min = sum
-		}
-	}
-
-	if min == 1<<60 {
-		fmt.Println(-1)
-	} else {
-		fmt.Println(min)
-	}
-}
-
-func getSum(a [][]int, order []int) (sum int) {
-	for i := range order {
-		sum += a[order[i]][i]
-	}
-	return sum
-}
-
-func isValid(taboosMap map[int][]int, order []int) bool {
-	n := len(order)
-	for i := range order {
-		if i != n-1 {
-			next := order[i+1]
-			taboos, ok := taboosMap[order[i]]
-			if ok {
-				for _, taboo := range taboos {
-					if next == taboo {
-						return false
-					}
-				}
+	ans := INF
+	for {
+		if isValid(order, serious) {
+			sum := 0
+			for i := 0; i < n; i++ {
+				sum += a[order[i]][i]
 			}
+			Chmin(&ans, sum)
+		}
+		if !NextPermutation(order) {
+			break
+		}
+	}
+
+	if ans != INF {
+		fmt.Println(ans)
+	} else {
+		fmt.Println(-1)
+	}
+}
+
+func isValid(x sort.IntSlice, serious [][]bool) bool {
+	n := x.Len()
+	for i := 1; i < n; i++ {
+		if serious[x[i-1]][x[i]] || serious[x[i]][x[i-1]] {
+			return false
 		}
 	}
 
 	return true
-}
-
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
-		panic(err)
-	}
-	return n
 }
 
 func NextPermutation(x sort.Interface) bool {
@@ -114,4 +97,28 @@ func NextPermutation(x sort.Interface) bool {
 		x.Swap(k, l)
 	}
 	return true
+}
+
+func Chmin(a *int, b int) bool {
+	if *a > b {
+		*a = b
+		return true
+	}
+	return false
+}
+
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
+		panic(err)
+	}
+
+	return -1
 }
