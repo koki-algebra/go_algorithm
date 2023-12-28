@@ -7,80 +7,94 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
+const (
+	INF = 1 << 60
 )
 
-type Position struct {
-	x, y int
-}
-
-func NewPosition(x, y int) Position {
-	return Position{x: x, y: y}
-}
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n, q := NextInt(), NextInt()
-	positions := make([]Position, n)
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
 
 	var (
-		xmin = 1 << 60
-		xmax = -(1 << 60)
-		ymin = 1 << 60
-		ymax = -(1 << 60)
+		n, q = NextInt(sc), NextInt(sc)
+		p    = make([]Point, n)
+		xmin = INF
+		xmax = -INF
+		ymin = INF
+		ymax = -INF
 	)
 
-	for i := range positions {
-		_x, _y := NextInt(), NextInt()
+	for i := 0; i < n; i++ {
+		_x, _y := NextInt(sc), NextInt(sc)
 		x := _x - _y
 		y := _x + _y
-		chmin(&xmin, x)
-		chmax(&xmax, x)
-		chmin(&ymin, y)
-		chmax(&ymax, y)
-		positions[i] = NewPosition(x, y)
+		p[i] = NewPoint(x, y)
+
+		Chmin(&xmin, x)
+		Chmax(&xmax, x)
+		Chmin(&ymin, y)
+		Chmax(&ymax, y)
 	}
 
 	for i := 0; i < q; i++ {
-		query := NextInt() - 1
-		pos := positions[query]
-		ans := max(max(abs(pos.x-xmin), abs(pos.x-xmax)), max(abs(pos.y-ymin), abs(pos.y-ymax)))
-		fmt.Println(ans)
+		j := NextInt(sc) - 1
+		x, y := p[j].x, p[j].y
+
+		ans := -1
+		Chmax(&ans, abs(x-xmin))
+		Chmax(&ans, abs(x-xmax))
+		Chmax(&ans, abs(y-ymin))
+		Chmax(&ans, abs(y-ymax))
+
+		fmt.Fprintln(w, ans)
 	}
+}
+
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
+		panic(err)
+	}
+
+	return -1
+}
+
+func Chmax(a *int, b int) bool {
+	if *a < b {
+		*a = b
+		return true
+	}
+	return false
+}
+
+func Chmin(a *int, b int) bool {
+	if *a > b {
+		*a = b
+		return true
+	}
+	return false
 }
 
 func abs(v int) int {
 	if v < 0 {
-		v = -v
+		return -v
 	}
 	return v
 }
 
-func chmin(a *int, b int) {
-	if *a > b {
-		*a = b
-	}
+type Point struct {
+	x, y int
 }
 
-func chmax(a *int, b int) {
-	if *a < b {
-		*a = b
-	}
-}
-
-func max(a, b int) int {
-	if a < b {
-		return b
-	}
-	return a
-}
-
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
-		panic(err)
-	}
-	return n
+func NewPoint(x, y int) Point {
+	return Point{x, y}
 }
