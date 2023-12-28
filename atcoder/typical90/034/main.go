@@ -7,56 +7,65 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n, k := NextInt(), NextInt()
-	a := make([]int, n+1)
-	for i := 1; i <= n; i++ {
-		a[i] = NextInt()
+
+	n, k := NextInt(sc), NextInt(sc)
+	a := make([]int, n)
+	for i := range a {
+		a[i] = NextInt(sc)
 	}
 
-	// 尺取り方
 	var (
-		ans   = 0
-		cr    = 1
-		count = 0
+		ans   = -1
+		right = 0
 		m     = make(map[int]int)
+		cnt   = 0
 	)
-	for i := 1; i <= n; i++ {
-		for cr <= n {
-			if m[a[cr]] == 0 {
-				if count == k {
+
+	for left := 0; left < n; left++ {
+		for right < n {
+			if m[a[right]] == 0 {
+				if cnt == k {
 					break
 				}
-				count++
+				cnt++
 			}
-			m[a[cr]]++
-			cr++
+			m[a[right]]++
+			right++
 		}
-		chmax(&ans, cr-i)
-		if m[a[i]] == 1 {
-			count--
+
+		Chmax(&ans, right-left)
+		if m[a[left]] == 1 {
+			cnt--
 		}
-		m[a[i]]--
+		m[a[left]]--
 	}
+
 	fmt.Println(ans)
 }
 
-func chmax(a *int, b int) {
-	if *a < b {
-		*a = b
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
 	}
-}
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
+}
+
+func Chmax(a *int, b int) bool {
+	if *a < b {
+		*a = b
+		return true
+	}
+	return false
 }
