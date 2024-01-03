@@ -2,19 +2,18 @@ package main
 
 import "fmt"
 
-const (
-	large = 1000000000000000000
-)
+const INF = 1e18
 
 func main() {
 	var a, b int
-	fmt.Scanf("%d %d", &a, &b)
+	fmt.Scan(&a, &b)
 
-	r := b / Gcd(a, b)
-	if r > large/a {
+	g := Gcd(a, b)
+
+	if a/g > INF/b {
 		fmt.Println("Large")
 	} else {
-		fmt.Println(r * a)
+		fmt.Println((a / g) * b)
 	}
 }
 
