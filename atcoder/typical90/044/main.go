@@ -7,39 +7,50 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n, q := NextInt(), NextInt()
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
+	n, q := NextInt(sc), NextInt(sc)
 	a := make([]int, n)
 	for i := range a {
-		a[i] = NextInt()
+		a[i] = NextInt(sc)
 	}
 
-	shifts := 0
+	top := 0
+
 	for i := 0; i < q; i++ {
-		t, x, y := NextInt(), NextInt()-1, NextInt()-1
+		t := NextInt(sc)
+		x, y := NextInt(sc)-1, NextInt(sc)-1
+		x = (x + top) % n
+		y = (y + top) % n
+
 		switch t {
 		case 1:
-			_x := (x + shifts) % n
-			_y := (y + shifts) % n
-			a[_x], a[_y] = a[_y], a[_x]
+			a[x], a[y] = a[y], a[x]
 		case 2:
-			shifts = (shifts + n - 1) % n
+			top = (top - 1 + n) % n
+			fmt.Println("top:", top)
 		case 3:
-			fmt.Println(a[(x+shifts)%n])
+			fmt.Fprintln(w, a[x])
 		}
 	}
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
