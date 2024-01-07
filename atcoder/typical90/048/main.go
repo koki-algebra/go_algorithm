@@ -8,43 +8,52 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n, k := NextInt(), NextInt()
-	a := make([]int, n)
-	b := make([]int, n)
+
+	n, k := NextInt(sc), NextInt(sc)
+	a, b := make([]int, n), make([]int, n)
+	points := make([]int, 2*n)
+
 	for i := 0; i < n; i++ {
-		a[i], b[i] = NextInt(), NextInt()
+		a[i], b[i] = NextInt(sc), NextInt(sc)
+		points[i] = b[i]
+	}
+	for i := 0; i < n; i++ {
+		points[n+i] = a[i] - b[i]
 	}
 
-	c := make([]int, 2*n)
-	for i := 0; i < 2*n; i++ {
-		if i < n {
-			c[i] = b[i]
-		} else {
-			c[i] = a[i-n] - b[i-n]
-		}
-	}
-
-	// sort in descending order
-	sort.Slice(c, func(i, j int) bool { return c[i] > c[j] })
+	sort.Slice(points, func(i, j int) bool { return points[i] > points[j] })
 
 	ans := 0
 	for i := 0; i < k; i++ {
-		ans += c[i]
+		ans += points[i]
 	}
+
 	fmt.Println(ans)
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func Chmax(a *int, b int) bool {
+	if *a < b {
+		*a = b
+		return true
+	}
+	return false
+}
+
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
