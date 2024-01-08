@@ -1,52 +1,49 @@
 package main
 
-import "fmt"
-
-const (
-	MOD = 100000
+import (
+	"fmt"
 )
+
+const MOD = 100000
 
 func main() {
 	var n, k int
-	fmt.Scanf("%d %d", &n, &k)
+	fmt.Scan(&n, &k)
 
-	nxt := make([]int, MOD)
+	nexts := make([]int, MOD)
+	timestamps := make([]int, MOD)
 	for i := 0; i < MOD; i++ {
-		nxt[i] = (i + digitsSum(i)) % MOD
-	}
-
-	timeStamps := make([]int, MOD)
-	for i := range timeStamps {
-		timeStamps[i] = -1
+		nexts[i] = (i + digitsSum(i)) % MOD
+		timestamps[i] = -1
 	}
 
 	pos := n
 	cnt := 0
-	for timeStamps[pos] == -1 {
-		timeStamps[pos] = cnt
-		pos = nxt[pos]
+	for timestamps[pos] == -1 {
+		timestamps[pos] = cnt
+		pos = nexts[pos]
 		cnt++
 	}
 
-	cycle := cnt - timeStamps[pos]
-	if k >= timeStamps[pos] {
-		k = (k-timeStamps[pos])%cycle + timeStamps[pos]
+	cycle := cnt - timestamps[pos]
+	if k >= timestamps[pos] {
+		k = (k-timestamps[pos])%cycle + timestamps[pos]
 	}
 
 	ans := -1
 	for i := 0; i < MOD; i++ {
-		if timeStamps[i] == k {
+		if timestamps[i] == k {
 			ans = i
 		}
 	}
 	fmt.Println(ans)
 }
 
-// digitsSum 各桁の和を計算する O(logN)
-func digitsSum(n int) (sum int) {
-	for n > 0 {
-		sum += n % 10
-		n /= 10
+// digitsSum calculates the sum of each digit O(logN)
+func digitsSum(x int) (sum int) {
+	for x > 0 {
+		sum += x % 10
+		x /= 10
 	}
 	return
 }
