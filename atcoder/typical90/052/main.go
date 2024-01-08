@@ -7,22 +7,18 @@ import (
 	"strconv"
 )
 
-const (
-	MOD = 1000000007
-)
-
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
+const MOD = 1000000007
 
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n := NextInt()
+
+	n := NextInt(sc)
 	a := make([][]int, n)
 	for i := range a {
 		a[i] = make([]int, 6)
 		for j := range a[i] {
-			a[i][j] = NextInt()
+			a[i][j] = NextInt(sc)
 		}
 	}
 
@@ -41,11 +37,18 @@ func main() {
 	fmt.Println(ans)
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
