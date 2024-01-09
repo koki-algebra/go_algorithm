@@ -2,62 +2,50 @@ package main
 
 import (
 	"bufio"
-	"container/list"
 	"fmt"
 	"os"
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
+const MAX_SIZE = 100000
 
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	q := NextInt()
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
 
-	deck := list.New()
+	cl, cr := MAX_SIZE, MAX_SIZE
+	a := make([]int, 2*MAX_SIZE)
+
+	q := NextInt(sc)
 	for i := 0; i < q; i++ {
-		t, x := NextInt(), NextInt()
+		t, x := NextInt(sc), NextInt(sc)
 		switch t {
 		case 1:
-			deck.PushFront(x)
+			cl--
+			a[cl] = x
 		case 2:
-			deck.PushBack(x)
+			a[cr] = x
+			cr++
 		case 3:
-			fmt.Println(find(x-1, deck))
+			fmt.Fprintln(w, a[cl+x-1])
 		}
 	}
 }
 
-func find(i int, l *list.List) int {
-	n := l.Len()
-	if i < n/2 {
-		index := 0
-		for e := l.Front(); e != nil; e = e.Next() {
-			if index == i {
-				return e.Value.(int)
-			}
-			index++
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
 		}
-	} else {
-		index := n - 1
-		for e := l.Back(); e != nil; e = e.Prev() {
-			if index == i {
-				return e.Value.(int)
-			}
-			index--
-		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
+		panic(err)
 	}
 
 	return -1
-}
-
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
-		panic(err)
-	}
-	return n
 }
