@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 const MOD = 1000000007
 
@@ -19,19 +22,30 @@ func main() {
 	} else if n == 2 {
 		fmt.Println(k * (k - 1) % MOD)
 	} else {
-		fmt.Println(k * (k - 1) % MOD * bitPower(k-2, n-2) % MOD)
+		fmt.Println(k * (k - 1) % MOD * Pow(k-2, n-2, MOD) % MOD)
 	}
 }
 
-func bitPower(a, b int) int {
+// Pow returns a^b (mod m)
+func Pow(a, b, m int) int {
 	ret := 1
-	for b != 0 {
-		if b%2 == 1 {
-			ret = ret * a % MOD
+	digits := countBinaryDigits(b)
+
+	for i := 0; i < digits; i++ {
+		if b>>i&1 == 1 {
+			ret = ret * a % m
 		}
-		a = a * a % MOD
-		b /= 2
+		a = a * a % m
 	}
 
 	return ret
+}
+
+// countBinaryDigits returns the number of digits when x is expressed in binary
+func countBinaryDigits(x int) int {
+	if x == 0 {
+		return 0
+	}
+
+	return int(math.Log2(float64(x))) + 1
 }
