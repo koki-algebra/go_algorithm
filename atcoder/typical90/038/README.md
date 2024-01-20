@@ -3,12 +3,13 @@
 ## テーマ: オーバーフローに注意
 
 ## 解法
+
 整数 a と b の**最小公倍数 (Least Common Multiple; LCM)** `l := LCM(a, b)` は a と b の**最大公約数 (Gratest Common Devisor; GCD)** g := `GCD(a, b)`を用いて
 
 ```
 l = a * b / g
-
 ```
+
 と表される. GCD(a, b) はユークリッドの互除法によって `O(log(a + b))` で求めることができる.
 
 ただし, オーバーフロー対策のために

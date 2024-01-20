@@ -3,12 +3,15 @@
 ## テーマ: a^b mod m は繰り返し二乗法
 
 ## 解法
-https://github.com/E869120/kyopro_educational_90/blob/main/editorial/069.jpg
+
+<https://github.com/E869120/kyopro_educational_90/blob/main/editorial/069.jpg>
 
 ## 繰り返し二乗法
+
 `x^n (mod m)` を愚直に計算すると `O(n)` かかるが, 指数部 `n` を**2の冪乗の和に分解**することで `O(log(n))` で計算できる.
 
 例:
+
 ```
 3^22 = 3^16 + 3^4 + 3^2 = 3^(2^4) + 3^(2^2) + 3^(2^1)
 ```
