@@ -1,7 +1,9 @@
 # ダイクストラ法 (Dijkstra's algorithm)
+
 **ダイクストラ法 (Dijkstra's algorithm)** はグラフ理論におけるエッジの重みが非負数の場合の単一始点最短経路問題を解くための最良優先探索によるアルゴリズムである.
 
 ## アルゴリズム
+
 ```
 ダイクストラ法
 
@@ -12,9 +14,11 @@
 ```
 
 ## 実装例
-https://github.com/koki-algebra/go_algorithm/blob/main/pkg/libs/dijkstra.go
+
+<https://github.com/koki-algebra/go_algorithm/blob/main/pkg/libs/dijkstra.go>
 
 ## 計算量
+
 グラフ `G(V, E)` に対して, 優先度付きキュー (Priority Queue) を用いたダイクストラ法の計算量は `O((|V|+|E|)log|V|)` である.
 
 まず, Priority Queue の Pop の計算量は `O(log|V|)` であり, 最悪の場合これをノードの数だけ実行するので, `O(|V|log|V|)` となる.
