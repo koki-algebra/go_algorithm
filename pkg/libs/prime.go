@@ -1,8 +1,6 @@
 package libs
 
-import "math"
-
-// IsPrime O(√n)
+// IsPrime determines whether n is prime. O(√n)
 func IsPrime(n int) bool {
 	for i := 2; i*i <= n; i++ {
 		if n%i == 0 {
@@ -12,7 +10,7 @@ func IsPrime(n int) bool {
 	return true
 }
 
-// GetPrimes O(nloglogn)
+// GetPrimes returns prime numbers less than or equal to n. O(nlog(log(n)))
 func GetPrimes(n int) (primes []int) {
 	isPrimes := make([]bool, n+1)
 	for i := range isPrimes {
@@ -21,8 +19,7 @@ func GetPrimes(n int) (primes []int) {
 	isPrimes[0] = false
 	isPrimes[1] = false
 
-	nSqrt := int(math.Sqrt(float64(n)))
-	for i := 2; i <= nSqrt; i++ {
+	for i := 2; i*i <= n; i++ {
 		if isPrimes[i] {
 			for j := 2 * i; j <= n; j += i {
 				isPrimes[j] = false
@@ -37,4 +34,28 @@ func GetPrimes(n int) (primes []int) {
 	}
 
 	return
+}
+
+// PrimeFactorize performs prime factorization of an integer n. Returns a map (key: prime factor, value: exponent of prime factor). O(√n)
+func PrimeFactorize(n int) map[int]int {
+	ret := make(map[int]int)
+	for p := 2; p*p <= n; p++ {
+		if n%p != 0 {
+			continue
+		}
+
+		e := 0
+		for n%p == 0 {
+			e++
+			n /= p
+		}
+
+		ret[p] = e
+	}
+
+	if n != 1 {
+		ret[n] = 1
+	}
+
+	return ret
 }
