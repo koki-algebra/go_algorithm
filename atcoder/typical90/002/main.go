@@ -15,32 +15,23 @@ func main() {
 
 	for bit := (1 << n) - 1; bit > 0; bit-- {
 		s := ""
+		cnt := 0
 		for i := 0; i < n; i++ {
 			if (bit >> i & 1) == 1 {
 				s = "(" + s
+				cnt--
 			} else {
 				s = ")" + s
+				cnt++
+			}
+
+			if cnt < 0 {
+				break
 			}
 		}
 
-		if isValid(s) {
+		if cnt == 0 {
 			fmt.Fprintln(w, s)
 		}
 	}
-}
-
-func isValid(s string) bool {
-	siz := 0
-	for i := range s {
-		if s[i] == '(' {
-			siz++
-		} else if s[i] == ')' {
-			siz--
-		}
-		if siz < 0 {
-			return false
-		}
-	}
-
-	return siz == 0
 }
