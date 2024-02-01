@@ -36,7 +36,10 @@ func GetPrimes(n int) (primes []int) {
 	return
 }
 
-// PrimeFactorize performs prime factorization of an integer n. Returns a map (key: prime factor, value: exponent of prime factor). O(√n)
+/*
+PrimeFactorize performs prime factorization of an integer n.
+Returns a map (key: prime factor, value: exponent of prime factor). O(√n)
+*/
 func PrimeFactorize(n int) map[int]int {
 	ret := make(map[int]int)
 	for p := 2; p*p <= n; p++ {
