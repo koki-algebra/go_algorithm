@@ -1,0 +1,16 @@
+name: Golang CI
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ^1.21
+      - name: Run Format
+        run: go fmt ./...
+      - name: Run Test
+        run: go test -v ./...

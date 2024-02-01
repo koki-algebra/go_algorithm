@@ -4,6 +4,9 @@
 fmt: ## Format code
 	@go fmt ./...
 
+lint: ## Lint code
+	@golangci-lint run
+
 test: ## Run Test
 	@go test -race -shuffle=on ./pkg/libs
 
