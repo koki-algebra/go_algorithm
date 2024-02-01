@@ -1,12 +1,24 @@
 linters:
   disable-all: true
   enable:
-    - govet
     - errcheck
+    - gosimple
+    - govet
+    - ineffassign
     - staticcheck
     - unused
-    - gosimple
-    - varcheck
-    - misspell
+    - gofmt
     - lll
-    - gofumpt
+    - gci
+    - misspell
+    - whitespace
+    - tparallel
+
+linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/koki-algebra/go_algorithm)
+      - blank
+      - dot
