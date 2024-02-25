@@ -32,7 +32,6 @@ func main() {
 			a[x], a[y] = a[y], a[x]
 		case 2:
 			top = (top - 1 + n) % n
-			fmt.Println("top:", top)
 		case 3:
 			fmt.Fprintln(w, a[x])
 		}
