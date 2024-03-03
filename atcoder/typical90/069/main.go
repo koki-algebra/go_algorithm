@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 const MOD = 1000000007
@@ -42,10 +41,16 @@ func Pow(a, b, m int) int {
 }
 
 // countBinaryDigits returns the number of digits when x is expressed in binary
-func countBinaryDigits(x int) int {
-	if x == 0 {
-		return 0
+func countBinaryDigits(n int) int {
+	if n == 0 {
+		return 1
 	}
 
-	return int(math.Log2(float64(x))) + 1
+	cnt := 0
+	for n > 0 {
+		n >>= 1
+		cnt++
+	}
+
+	return cnt
 }
