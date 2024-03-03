@@ -26,7 +26,7 @@ func pow(x, n, m int) int {
 
 	// O(log(n))
 	for i := 0; i < digits; i++ {
-		// i 桁目にビットが立っているならば x^i を乗算する
+		// i 桁目にビットが立っているならば x^{2^i} を乗算する
 		if n >> i & 1 == 1 {
 			ret = ret * x % m
 		}
