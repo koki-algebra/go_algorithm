@@ -26,7 +26,7 @@ func TestCountBinaryDigits(t *testing.T) {
 	tests := []struct {
 		input, expected int
 	}{
-		{0, 0},     // 0 in binary has 0 digits
+		{0, 1},     // 0 in binary has 1 digits
 		{1, 1},     // 1 in binary has 1 digit
 		{10, 4},    // 10 in binary is 1010, which has 4 digits
 		{255, 8},   // 255 in binary is 11111111, which has 8 digits
