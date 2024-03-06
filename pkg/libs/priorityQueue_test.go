@@ -8,6 +8,8 @@ import (
 )
 
 func TestPriorityQueue(t *testing.T) {
+	t.Parallel()
+
 	// Some items and their priorities.
 	items := map[string]int{
 		"banana": 3, "apple": 2, "pear": 4,

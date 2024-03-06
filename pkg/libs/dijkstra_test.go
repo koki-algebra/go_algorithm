@@ -7,6 +7,8 @@ import (
 )
 
 func TestDijkstra(t *testing.T) {
+	t.Parallel()
+
 	input, err := os.Open("../../testdata/dijkstra_input.txt")
 	if err != nil {
 		t.Fatal("failed to open input file")

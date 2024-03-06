@@ -7,6 +7,8 @@ import (
 )
 
 func TestReverseString(t *testing.T) {
+	t.Parallel()
+
 	tests := map[string]struct {
 		str string
 		exp string
@@ -23,6 +25,8 @@ func TestReverseString(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			got := ReverseString(test.str)
 			assert.Equal(t, test.exp, got)
 		})
