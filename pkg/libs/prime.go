@@ -42,22 +42,24 @@ Returns a map (key: prime factor, value: exponent of prime factor). O(√n)
 */
 func PrimeFactorize(n int) map[int]int {
 	ret := make(map[int]int)
+	rem := n
+
 	for p := 2; p*p <= n; p++ {
-		if n%p != 0 {
+		if rem%p != 0 {
 			continue
 		}
 
 		e := 0
-		for n%p == 0 {
+		for rem%p == 0 {
 			e++
-			n /= p
+			rem /= p
 		}
 
 		ret[p] = e
 	}
 
-	if n != 1 {
-		ret[n] = 1
+	if rem != 1 {
+		ret[rem] = 1
 	}
 
 	return ret
