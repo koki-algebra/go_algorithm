@@ -3,6 +3,8 @@ package libs
 import "testing"
 
 func TestQueue(t *testing.T) {
+	t.Parallel()
+
 	q := NewQueue()
 
 	q.Enqueue(1)

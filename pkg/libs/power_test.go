@@ -2,6 +2,8 @@ package libs
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPow(t *testing.T) {
@@ -23,20 +25,25 @@ func TestPow(t *testing.T) {
 }
 
 func TestCountBinaryDigits(t *testing.T) {
-	tests := []struct {
-		input, expected int
+	t.Parallel()
+
+	tests := map[string]struct {
+		n   int
+		exp int
 	}{
-		{0, 1},     // 0 in binary has 1 digits
-		{1, 1},     // 1 in binary has 1 digit
-		{10, 4},    // 10 in binary is 1010, which has 4 digits
-		{255, 8},   // 255 in binary is 11111111, which has 8 digits
-		{1024, 11}, // 1024 in binary is 10000000000, which has 11 digits
+		"0":    {0, 1},     // 0 in binary has 1 digits
+		"1":    {1, 1},     // 1 in binary has 1 digit
+		"10":   {10, 4},    // 10 in binary is 1010, which has 4 digits
+		"255":  {255, 8},   // 255 in binary is 11111111, which has 8 digits
+		"1024": {1024, 11}, // 1024 in binary is 10000000000, which has 11 digits
 	}
 
-	for _, test := range tests {
-		result := countBinaryDigits(test.input)
-		if result != test.expected {
-			t.Errorf("countBinaryDigits(%d) = %d, want %d", test.input, result, test.expected)
-		}
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := countBinaryDigits(test.n)
+			assert.Equal(t, test.exp, got)
+		})
 	}
 }

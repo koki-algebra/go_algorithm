@@ -3,6 +3,8 @@ package libs
 import "testing"
 
 func TestStack(t *testing.T) {
+	t.Parallel()
+
 	s := NewStack()
 
 	s.Push(1)

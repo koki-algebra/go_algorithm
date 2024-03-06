@@ -8,6 +8,8 @@ import (
 )
 
 func TestGcd(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		x, y int
 		exp  int
@@ -21,6 +23,8 @@ func TestGcd(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("(x,y)=(%d,%d)", test.x, test.y), func(t *testing.T) {
+			t.Parallel()
+
 			got := Gcd(test.x, test.y)
 			assert.Equal(t, test.exp, got)
 		})

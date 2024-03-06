@@ -7,6 +7,8 @@ import (
 )
 
 func TestChmin(t *testing.T) {
+	t.Parallel()
+
 	tests := map[string]struct {
 		a, b    int
 		expA    int
@@ -18,6 +20,8 @@ func TestChmin(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			a := test.a
 			got := Chmin(&a, test.b)
 			assert.Equal(t, test.expBool, got)
@@ -27,6 +31,8 @@ func TestChmin(t *testing.T) {
 }
 
 func TestChmax(t *testing.T) {
+	t.Parallel()
+
 	tests := map[string]struct {
 		a, b    int
 		expA    int
@@ -38,6 +44,8 @@ func TestChmax(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			a := test.a
 			got := Chmax(&a, test.b)
 			assert.Equal(t, test.expBool, got)

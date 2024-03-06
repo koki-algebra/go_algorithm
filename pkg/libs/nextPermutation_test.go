@@ -8,6 +8,8 @@ import (
 )
 
 func TestNextPermutation(t *testing.T) {
+	t.Parallel()
+
 	intSlice := []int{1, 2, 3}
 	intExp := [][]int{
 		{1, 3, 2},
