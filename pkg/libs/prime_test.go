@@ -8,6 +8,8 @@ import (
 )
 
 func TestIsPrime(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		n   int
 		exp bool
@@ -26,12 +28,16 @@ func TestIsPrime(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("n=%d", test.n), func(t *testing.T) {
+			t.Parallel()
+
 			assert.Equal(t, test.exp, IsPrime(test.n))
 		})
 	}
 }
 
 func TestGetPrimes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		n   int
 		exp []int
@@ -48,7 +54,54 @@ func TestGetPrimes(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("n=%d", test.n), func(t *testing.T) {
+			t.Parallel()
+
 			got := GetPrimes(test.n)
+			assert.Equal(t, test.exp, got)
+		})
+	}
+}
+
+func TestPrimeFactorize(t *testing.T) {
+	t.Parallel()
+
+	tests := map[string]struct {
+		n   int
+		exp map[int]int
+	}{
+		"123456789": {
+			n: 123456789,
+			exp: map[int]int{
+				3:    2,
+				3607: 1,
+				3803: 1,
+			},
+		},
+		"876543210": {
+			n: 876543210,
+			exp: map[int]int{
+				2:    1,
+				3:    2,
+				5:    1,
+				1997: 1,
+				4877: 1,
+			},
+		},
+		"987654321": {
+			n: 987654321,
+			exp: map[int]int{
+				3:      2,
+				17:     2,
+				379721: 1,
+			},
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := PrimeFactorize(test.n)
 			assert.Equal(t, test.exp, got)
 		})
 	}
