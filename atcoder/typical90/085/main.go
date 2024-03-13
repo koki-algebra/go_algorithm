@@ -9,29 +9,29 @@ func main() {
 	var k int
 	fmt.Scan(&k)
 
-	var devisors []int
+	var divisors []int
 	for i := 1; i*i <= k; i++ {
 		if k%i != 0 {
 			continue
 		}
-		devisors = append(devisors, i)
+		divisors = append(divisors, i)
 		if k/i != i {
-			devisors = append(devisors, k/i)
+			divisors = append(divisors, k/i)
 		}
 	}
 
-	sort.Ints(devisors)
+	sort.Ints(divisors)
 
 	ans := 0
-	for i := range devisors {
-		for j := i; j < len(devisors); j++ {
-			if k/devisors[i] < devisors[j] {
+	for i := range divisors {
+		for j := i; j < len(divisors); j++ {
+			if k/divisors[i] < divisors[j] {
 				continue
 			}
-			if k%(devisors[i]*devisors[j]) != 0 {
+			if k%(divisors[i]*divisors[j]) != 0 {
 				continue
 			}
-			if devisors[j] <= k/(devisors[i]*devisors[j]) {
+			if divisors[j] <= k/(divisors[i]*divisors[j]) {
 				ans++
 			}
 		}
