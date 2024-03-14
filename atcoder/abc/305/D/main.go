@@ -8,18 +8,20 @@ import (
 	"strconv"
 )
 
-var (
-	sc = bufio.NewScanner(os.Stdin)
-)
-
 func main() {
+	sc := bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
-	n := NextInt()
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
+	n := NextInt(sc)
 	a := make([]int, n)
 	for i := range a {
-		a[i] = NextInt()
+		a[i] = NextInt(sc)
 	}
+	q := NextInt(sc)
 
+	// sleeps[i]: a[i] 分までに何分寝たか
 	sleeps := make([]int, n)
 	for i := 1; i < n; i++ {
 		if i%2 == 0 {
@@ -29,34 +31,40 @@ func main() {
 		}
 	}
 
-	q := NextInt()
+	// x 分までに何分寝たか
+	f := func(x int) int {
+		j := sort.Search(n, func(i int) bool {
+			return a[i] > x
+		})
+
+		if j == 0 {
+			return 0
+		} else if j == n {
+			return sleeps[n-1]
+		}
+
+		return sleeps[j-1] + (sleeps[j]-sleeps[j-1])/(a[j]-a[j-1])*(x-a[j-1])
+	}
+
 	for i := 0; i < q; i++ {
-		ans := 0
-		l, r := NextInt(), NextInt()
-		indexL := sort.Search(n, func(i int) bool {
-			return a[i] >= l
-		})
-		indexR := sort.Search(n, func(i int) bool {
-			return a[i] >= r
-		})
-
-		if indexL%2 == 0 {
-			ans += a[indexL] - l
-		}
-		if indexR%2 == 0 {
-			ans += r - a[indexR-1]
-		}
-		ans += sleeps[indexR-1] - sleeps[indexL]
-
-		fmt.Println(ans)
+		l := NextInt(sc)
+		r := NextInt(sc)
+		fmt.Fprintln(w, f(r)-f(l))
 	}
 }
 
-func NextInt() int {
-	sc.Scan()
-	n, err := strconv.Atoi(sc.Text())
-	if err != nil {
+func NextInt(sc *bufio.Scanner) int {
+	if sc.Scan() {
+		n, err := strconv.Atoi(sc.Text())
+		if err != nil {
+			panic(err)
+		}
+		return n
+	}
+
+	if err := sc.Err(); err != nil {
 		panic(err)
 	}
-	return n
+
+	return -1
 }
