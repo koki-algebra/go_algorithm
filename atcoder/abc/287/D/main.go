@@ -1,41 +1,37 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 
 func main() {
-	var s, t string
-	fmt.Scan(&s, &t)
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Buffer([]byte{}, 5e6)
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
+	s := NextLine(sc)
+	t := NextLine(sc)
 
 	// S と T の先頭 i 文字が一致するかどうか
 	pre := make([]bool, len(s)+1)
+	pre[0] = true
 	// S と T の末尾 i　文字が一致するかどうか
 	suf := make([]bool, len(s)+1)
-
-	pre[0] = true
 	suf[0] = true
 
-	for i := 0; i < len(t); i++ {
-		if !isMatch(s[i], t[i]) {
-			break
-		}
-		pre[i+1] = true
-	}
-
-	s = ReverseString(s)
-	t = ReverseString(t)
-
-	for i := 0; i < len(t); i++ {
-		if !isMatch(s[i], t[i]) {
-			break
-		}
-		suf[i+1] = true
+	for i := 1; i <= len(t); i++ {
+		pre[i] = isMatch(s[i-1], t[i-1]) && pre[i-1]
+		suf[i] = isMatch(s[len(s)-i], t[len(t)-i]) && suf[i-1]
 	}
 
 	for x := 0; x <= len(t); x++ {
 		if pre[x] && suf[len(t)-x] {
-			fmt.Println("Yes")
+			fmt.Fprintln(w, "Yes")
 		} else {
-			fmt.Println("No")
+			fmt.Fprintln(w, "No")
 		}
 	}
 }
@@ -44,15 +40,13 @@ func isMatch(c1, c2 byte) bool {
 	return c1 == c2 || c1 == '?' || c2 == '?'
 }
 
-func ReverseSlice[T any](slice []T) []T {
-	new := make([]T, len(slice))
-	copy(new, slice)
-	for i, j := 0, len(new)-1; i < j; i, j = i+1, j-1 {
-		new[i], new[j] = new[j], new[i]
+func NextLine(sc *bufio.Scanner) string {
+	if sc.Scan() {
+		return sc.Text()
 	}
-	return new
-}
+	if err := sc.Err(); err != nil {
+		panic(err)
+	}
 
-func ReverseString(s string) string {
-	return string(ReverseSlice([]rune(s)))
+	return ""
 }
